@@ -14,11 +14,11 @@
 :Parameter
 
 #for PFS
-  EXPTIME=1
-  DESIGN_ID=1
-  DESIGN_PATH="/export/home/pfs"
-  FROM_VISIT_ID=0
-  SKY="yes"
+  #EXPTIME=1
+  #DESIGN_ID=0
+  #DESIGN_PATH="/export/home/pfs"
+  #VISIT_ID=0
+  #FROM_SKY="yes"
   
 :Command
 :start
@@ -28,8 +28,8 @@
 
 EXEC OBS Set_Message Instrument_name=PFS obsinfo1="AGon" obsinfo2=clear obsinfo3="Start" obsinfo4=clear obsinfo5=clear ;
 
-
-exec pfs pfscmd actor="ag" cmd="autoguide start design_id=$DESIGN_ID design_path=$DESIGN_PATH from_visit_id=$FROM_VISIT_ID sky=$SKY" ;
+#exec pfs pfscmd actor="ag" cmd="autoguide start design_id=$DESIGN_ID design_path=$DESIGN_PATH visit_id=$VISIT_ID from_sky=$FROM_SKY" ;
+exec pfs pfscmd actor="ag" cmd="autoguide restart"
 # oneCmd.py ag autoguide start design_id=1 design_path=/export/home/pfs from_visit_id=0 sky=yes
 
 EXEC OBS Set_Message Instrument_name=PFS obsinfo3="Done. "  ;
