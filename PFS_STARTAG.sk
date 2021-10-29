@@ -21,6 +21,7 @@
   INTERVAL=10
   DESIGN_ID=1
   VISIT_ID=0
+  FROM_SKY="no"
 
 #DOCENTROID=FALSE
 # Object (passed to Gen2 FITS.PFS.OBJECT status.)
@@ -45,26 +46,32 @@ EXEC OBS Set_Message Instrument_name=PFS obsinfo2="Stop running AG" ;
 EXEC pfs pfscmd actor="ag" cmd="autoguide stop" ;
 
 
+# EXEC TSC Autoguide on ???
+
 
 EXEC OBS Set_Message Instrument_name=PFS obsinfo2="Acquiring field" ;
 *IF "$AG" == "ON"
     *Set GUIDE = "yes"
 *ELSE
-    * Set GUIDE = "no"
+    *Set GUIDE = "no"
 
-*IF "$PFSDESIGN" == "NOP"
-    # start AG at the current position
-
-
-*ELSE
-    EXEC pfs pfscmd actor="ag" cmd="aquire_field design_path=$DESIGN_PATH exposure_time=$EXPT_AG guide=$GUIDE" ;
-
+#*IF "$PFSDESIGN" == "NOP"
+#    # start AG at the current position
+#
+#*ELSE
+#    EXEC pfs pfscmd actor="ag" cmd="aquire_field design_path=$DESIGN_PATH exposure_time=$EXPT_AG guide=$GUIDE" ;
+#    EXEC pfs pfscmd actor="ag" cmd="aquire_field2 exposure_time=$EXPT_AG guide=$GUIDE center=!current_position(RA,Dec) insrot=0(sync)" ;
+#
 
 *Set INFO3 = "ExpTime : $EXPTIME"
 *Set INFO4 = "Interval : $INTERVAL"
 EXEC OBS Set_Message Instrument_name=PFS obsinfo2="Start" obsinfo3=INFO3 obsinfo4=INFO4;
-EXEC pfs pfscmd actor="ag" cmd="autoguide start design_id=$DESIGN_ID visit_id=$VISIT_ID exposure_time=$EXPT_AG cadence=$INT_AG" ;
-# Does this command keep running after this Gen2 command finished?
+EXEC pfs pfscmd actor="ag" cmd="autoguide start design_id=$DESIGN_ID visit_id=$VISIT_ID exposure_time=$EXPT_AG cadence=$INT_AG from_sky=$FROM_SKY" ;
+
+# EXEC TSC Autoguide on ???
+
+
+
 # Is there a command to check AG status?
 
 
