@@ -5,7 +5,7 @@
 #
 #**********************************************************************
 :Header
-    SCRIPT_AUTHOR=Moritani, Koshida
+    SCRIPT_AUTHOR=Moritani, Yoshida, Koshida
     SCRIPT_UPDATE=2021.10.05
     OBE_ID=PFS
     OBE_MODE=SPEC_ENG
@@ -13,12 +13,10 @@
 
 :Parameter
 #for PFS
-  SSYS=PFI
-  NFRAME=1
   EXPTIME=1
   #DOCENTROID=FALSE
 # Object (passed to Gen2 FITS.PFS.OBJECT status.)
-  OBJECT="test" # dark|test|object
+  OBJECT="object" # dark|test|object
   PFIVISITID=0 # pfiVisitId
   COMBINED=1
   CENTROID=0  
@@ -28,7 +26,6 @@
 
 # Calc timelimit for sequence of exposure
 *SET TIMELIM = $EXPTIME + 15
-*SET TIMELIM_TOT = (30 + $TIMELIM * $NFRAME)
 
 :main_start
 
