@@ -15,7 +15,7 @@
 :Parameter
 #for PFS
   EXPTIME=1
-  AG="ON"
+  #AG="ON"
   #EXPTYPE=OBJECT
   DESIGN_PATH=NOP # /export/home/pfs/pfsDesign-0x0000000000000001.fits
   INTERVAL=10
@@ -49,11 +49,11 @@ EXEC pfs pfscmd actor="ag" cmd="autoguide stop" ;
 # EXEC TSC Autoguide on ???
 
 
-EXEC OBS Set_Message Instrument_name=PFS obsinfo2="Acquiring field" ;
-*IF "$AG" == "ON"
-    *Set GUIDE = "yes"
-*ELSE
-    *Set GUIDE = "no"
+#EXEC OBS Set_Message Instrument_name=PFS obsinfo2="Acquiring field" ;
+#*IF "$AG" == "ON"
+#    *Set GUIDE = "yes"
+#*ELSE
+#    *Set GUIDE = "no"
 
 #*IF "$PFSDESIGN" == "NOP"
 #    # start AG at the current position
