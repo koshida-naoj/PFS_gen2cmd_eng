@@ -15,11 +15,11 @@ OBSERVATION_END_TIME=06:00:00
 
 DEF_PFSENG=OBE_ID=PFS OBE_MODE=SPEC_ENG
 DEF_CMNTOOL=OBE_ID=COMMON OBE_MODE=TOOL
-DEF_CMNLAN=OBE_ID=COMMON OBE_MODE=LAUNCHER F_SELECT="P_Opt2"
+DEF_CMNLAN=OBE_ID=COMMON OBE_MODE=LAUNCHER
 
 # pfsDesign path directory
-PFSDSGNDIR="/export/home/pfs/"
-
+#PFSDSGNDIR="/export/home/pfs/"
+PFSDSGNDIR="/data/pfsDesign"
 
 ##
 ## Object definition
@@ -27,7 +27,28 @@ PFSDSGNDIR="/export/home/pfs/"
 
 VISIT01=OBJECT="Visit01" RA=190000.000 DEC=+200000.00 EQUINOX=2000.0
 
+# Field with many stars
+FIELD01=OBJECT="S1" RA=004000.000 DEC=+124000.00 EQUINOX=2000.0
+FIELD02=OBJECT="S2" RA=025500.000 DEC=-171000.00 EQUINOX=2000.0
+S3=OBJECT="S3" RA=042838.150 DEC=-052902.86 EQUINOX=2000.0
+S4=OBJECT="S4" RA=050500.000 DEC=+050000.00 EQUINOX=2000.0
+S5=OBJECT="S5" RA=081544.550 DEC=-012903.55 EQUINOX=2000.0
+ALBIERO=OBJECT="Albireo" RA=193043.28 DEC=+275734.85 EQUINOX=2000.0
+WZSGE=OBJECT="WZ_Sge" RA=200736.50 DEC=+174214.73 EQUINOX=2000.0
 
+N4=OBJECT="N4" RA=073343.939 DEC=+344250.94 EQUINOX=2000.0
+
+N1=OBJECT="N1" RA=013029.050 DEC=+444657.89 EQUINOX=2000.0
+#N4=OBJECT="N4" RA=013029.050 DEC=+444657.89 EQUINOX=2000.0
+
+
+M45=OBJECT="M45" RA=034624.24 DEC=+240650.40 EQUINOX=2000.0
+MWC148=OBJECT="MWC148" RA=063259.26 DEC=+054801.16 EQUINOX=2000.0
+UGEM=OBJECT="UGEM" RA=075505.23 DEC=+220005.05 EQUINOX=2000.0
+
+
+
+#FIELD02=OBJECT="S1" RA=
 
 #NGC77145=OBJECT="NGC7714/7715" RA=233618.320 DEC=+020921.28 EQUINOX=2000.0
 #L1551=OBJECT="L1551" RA=043130.000 DEC=+181000.00 EQUINOX=2000.0
@@ -39,6 +60,74 @@ VISIT01=OBJECT="Visit01" RA=190000.000 DEC=+200000.00 EQUINOX=2000.0
 </PARAMETER_LIST>
 
 <COMMAND>
+
+
+SETAZEL $DEF_CMNLAN AZ=0.0 EL=60
+SETROTATOR $DEF_CMNLAN F_SELECT=P_Opt2 INSROT_PA=30 TELESCOPE=FREE 
+TELTRACK $DEF_CMNLAN
+# on-the-fly mode
+PFS_STARTAG $DEF_PFSENG EXPTIME=5 INTERVAL=20 AG="on" FROM_SKY=NO
+# exposure with AGCC
+AGEXP $DEF_PFSENG EXPTIME=5 NFRAME=1 
+
+OFFSET_AZEL OBE_ID=COMMON OBE_MODE=LAUNCHER DELTA_AZ=0.0 DELTA_EL=0.017
+MOVETELESCOPE OBE_ID=COMMON OBE_MODE=LAUNCHER OFFSET_Mode="Relative" DELTA_RA=0 DELTA_DEC=60
+
+# Checking orientation of AG cameras
+SETAZEL $DEF_CMNLAN AZ=0.0 EL=60 
+TELTRACK $DEF_CMNLAN
+AGEXP $DEF_PFSENG EXPTIME=10 NFRAME=1
+OFFSET_AZEL OBE_ID=COMMON OBE_MODE=LAUNCHER DELTA_AZ=0.0 DELTA_EL=0.017
+AGEXP $DEF_PFSENG EXPTIME=5 NFRAME=1
+OFFSET_AZEL OBE_ID=COMMON OBE_MODE=LAUNCHER DELTA_AZ=0.033 DELTA_EL=0.0
+AGEXP $DEF_PFSENG EXPTIME=5 NFRAME=1
+
+
+SetupField $DEF_PFSENG RA=022537.420 Dec=+493443.08 EQUINOX=2000.0 ROTA=-140 OFFSET_RA=0 OFFSET_DEC=0 OBJECT="test" Z=4.95
+
+
+
+SetupField $DEF_PFSENG $N1 ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=2.7
+SetupField $DEF_PFSENG $FIELD01 ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=1.75
+SetupField $DEF_PFSENG $N4 ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=2.7
+SetupField $DEF_PFSENG $S3 ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=2.75
+SetupField $DEF_PFSENG $M45 ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=2.95
+SetupField $DEF_PFSENG $MWC148 ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=2.75
+SetupField $DEF_PFSENG $S5 ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=2.75
+SetupField $DEF_PFSENG $ALBIERO ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=2.75
+SetupField $DEF_PFSENG $WZSGE ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=2.75
+
+
+Exec OBS Set_Message Instrument_Name=PFS ObsInfo1="Test  :  " ObsInfo2=!STATL.WAVELEN ObsInfo3=clear ObsInfo4=Clear ObsInfo5=Clear
+
+# boresight
+
+PFS_MCS_PFI_ROTCENTER $DEF_PFSENG SSYS=MCS NFRAME=1 EXPTIME=5 ROTA=-70 DROTA=5 NMOVE_ROTA=1 OBJECT="Rotation Center calib" TIMELIM=60
+
+PFS_MCS_PFI_ROTCENTER $DEF_PFSENG SSYS=MCS NFRAME=1 EXPTIME=5 ROTA=-165 DROTA=30 NMOVE_ROTA=11 OBJECT="Rotation Center calib"
+
+
+# twilight sky
+
+pfs_sps_exposure obe_id=pfs obe_mode=spec_eng EXPTIME=1 exptype="object" nframe=1 camera="b1,r1" seq_name="Test" seq_comment="Test"
+
+pfs_sps_exposure obe_id=pfs obe_mode=spec_eng EXPTIME=120 exptype="object" nframe=8 camera="b1,r1" seq_name="Twilight" seq_comment="Twilight to study color"
+
+# POpt2 position 
+PFS_POPT2_MOVE COMP="HEXAPOD" X=0.03 Y=-2.72 Z=2.70 TX=0.74 TY=3.20
+
+
+# ADC filter seeting
+EXEC TSC ADC_PF_FILTER MOTOR=ON F_SELECT=P_Opt2 INSTRUMENT_NAME=PFS FILTER_ID=106
+
+
+# Start AG with pfsDesign
+PFS_STARTAG $DEF_PFSENG EXPTIME=5 INTERVAL=10 DESIGN_PATH="/data/pfsDesign-0x0000000000000001.fits" FROM_SKY=NO
+
+
+SetupField $DEF_PFSENG $N1 ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=2.95
+
+
 
 
 ### P-6 AG camera validation ###
@@ -66,16 +155,28 @@ SetRotator $DEF_CMNLAN INSROT_PA=30 TELESCOPE=FREE
 ## Focusing ##
 
 # 1. Slew the telescope to a field (field acquisition)
-SetupField $DEF_PFSENG $VISIT01 ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=1.75
+SetupField $DEF_PFSENG $N1 ROTA=0 OFFSET_RA=0 OFFSET_DEC=0 Z=1.75
 
 # 2. Execute focusing using AG through diferent z position
-PFS_AGFOCUS $DEF_PFSENG EXPTIME=1 Z=0.25
-PFS_AGFOCUS $DEF_PFSENG EXPTIME=1 Z=0.75
-PFS_AGFOCUS $DEF_PFSENG EXPTIME=1 Z=1.25
-PFS_AGFOCUS $DEF_PFSENG EXPTIME=1 Z=1.75
-PFS_AGFOCUS $DEF_PFSENG EXPTIME=1 Z=2.25
-PFS_AGFOCUS $DEF_PFSENG EXPTIME=1 Z=2.75
-PFS_AGFOCUS $DEF_PFSENG EXPTIME=1 Z=3.25
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=0.25
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=0.75
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=1.25
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=1.7
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=2.2
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=2.7
+# on focus~2.7
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=3.2
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=3.7
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=4.25
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=4.75
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=5 Z=5.25
+
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=10 Z=5.25
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=1 Z=4.25
+PFS_AGFOCUS $DEF_PFSENG EXPTIME=1 Z=4.75
+
+
+
 
 ## Items below in focusing test with SpS will be done in a different eng. obs. run.
 
@@ -244,7 +345,7 @@ exec pfs pfscmd actor="hub" cmd="actors"
 
 PFS_MCS_MULTI_EXP_IIC obe_id=pfs obe_mode=spec_eng nframe=30 exptime=0.5 exptype=object object="test" 
 
-exec pfs mcsexpose exptype=object exptime=0.5 docentroid=true dofiberid=false
+exec pfs mcsexpose exptype=object exptime=0.8
 exec pfs pfscmd actor="mcs" cmd="expose object expTime=0.5 doCentroid" 
 
 ##
@@ -256,10 +357,30 @@ exec pfs pfscmd actor="mcs" cmd="expose object expTime=0.5 doCentroid"
 pfs_sps_exposure obe_id=pfs obe_mode=spec_eng exptype=bias nframe=1 camera="b1,r1" seq_name="test"
 
 
+## sps
+pfs_sps_exposure obe_id=pfs obe_mode=spec_eng exptype="bias" nframe=1 
+pfs_sps_exposure obe_id=pfs obe_mode=spec_eng exptype=bias nframe=1 camera="b1" seq_name="test"
+
+pfs_sps_exposure obe_id=pfs obe_mode=spec_eng exptype="dark" exptime=1 nframe=1 
+
+pfs_fibre_light obe_id=pfs obe_mode=spec_eng ff=off sf=off
+
+pfs_sps_exposure obe_id=pfs obe_mode=spec_eng exptype="trace" hal=480 exptime=480 nframe=3
+pfs_sps_exposure obe_id=pfs obe_mode=spec_eng exptype="arc" hgcd=2 exptime=2 nframe=1
+
+pfs_sps_exposure obe_id=pfs obe_mode=spec_eng exptype="arc" ne=30 exptime=30 nframe=3
+
+pfs_sps_exposure obe_id=pfs obe_mode=spec_eng exptype="object" exptime=1000 nframe=1 object="sky"
+
+
+
+
 # Fiber illuminator
 
-pfs_fibre_light obe_id=pfs obe_mode=spec_eng ff=on ff_power=10 sf=on sf_power=65
-
+pfs_fibre_light obe_id=pfs obe_mode=spec_eng ff=on ff_power=5 sf=on sf_power=65
+pfs_fibre_light obe_id=pfs obe_mode=spec_eng ff=off sf=off
+pfs_fibre_light obe_id=pfs obe_mode=spec_eng ff=on ff_power=35 sf=off
+pfs_fibre_light obe_id=pfs obe_mode=spec_eng ff=off sf=on sf_power=65
 
 ##
 ## PFI operation
@@ -404,9 +525,18 @@ SETAZEL $DEF_CMNLAN AZ=nop EL=nop
 
 TELTRACK $DEF_CMNLAN
 
+# Give telescope offset
+
+OFFSET_AZEL OBE_ID=COMMON OBE_MODE=LAUNCHER DELTA_AZ=0.0 DELTA_EL=0.017
+# in degree
+
+MOVETELESCOPE OBE_ID=COMMON OBE_MODE=LAUNCHER OFFSET_Mode="Relative" DELTA_RA=0 DELTA_DEC=60
+# in arcsec
+# OFFSET_MODE: "Relative" or "Offset"
+
 # Set Rotator Position !!!-150 to +180 only!!!
 
-EXEC TSC InsRot_PF Telescope=free COORD=abs POSITION=0
+EXEC TSC InsRot_PF MOTOR=ON Telescope=free COORD=abs POSITION=0
 # or
 SETROTATOR $DEF_CMNLAN F_SELECT=P_Opt2 INSROT_PA=30 TELESCOPE=FREE
 
@@ -418,6 +548,17 @@ SETFOCUS $DEF_CMNLAN Z=1.75
 
 PFS_POPT2_MOVE COMP="HEXAPOD" X= Y= Z= TX= TY=
 PFS_POPT2_MOVE COMP="ADC" MMODE="MM" POSIN=7.32
+
+# ADC 
+
+EXEC TSC ADC_PF MOTOR=ON F_SELECT=P_OPT2 TELESCOPE=LINK WAVELEN=0.82
+
+## New command for filter setting (by Eric-san)
+
+EXEC TSC ADC_PF_FILTER MOTOR=ON F_SELECT=P_OPT2 FILTER_ID=106
+
+# ADC filter seeting
+EXEC TSC ADC_PF_FILTER MOTOR=ON F_SELECT=P_Opt2 INSTRUMENT_NAME=PFS FILTER_ID=106
 
 
 </COMMAND>
